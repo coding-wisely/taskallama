@@ -19,6 +19,23 @@ It simplifies generating AI-powered content, from professional task writing to c
 
 ---
 
+---
+
+## Prerequisites
+
+1. **Ollama Installation**
+    - Taskallama requires [Ollama](https://ollama.com/) to be installed and running locally on your machine. You can download and install Ollama from their official website:
+        - [Ollama Installation Guide](https://ollama.com/)
+
+2. **Ollama Configuration**
+    - By default, Taskallama connects to Ollama at `http://127.0.0.1:11434`. Ensure that Ollama is running and accessible at this address. You can update the `OLLAMA_URL` in the config file if it's hosted elsewhere.
+
+3. **System Requirements**
+    - PHP `^8.3` or higher.
+    - Laravel `^11.0` or higher.
+
+---
+
 ## Installation
 
 You can install the package via composer:
