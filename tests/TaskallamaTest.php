@@ -32,14 +32,14 @@ it('correctly processes ask method with real API call', function () {
     expect($response)->toBeArray();
 });
 it('lists available local models', function () {
-    $models = $this->taskallama->models();
+    $models = $this->taskallama::listLocalModels();
     expect($models)->toBeArray();
 });
 
 it('shows information about the selected model', function () {
-    $models = $this->taskallama->models();
+    $models = $this->taskallama::listLocalModels();
     $model = $models['models'][0];
     $this->taskallama->model($model['name']);
-    $info = $this->taskallama->show();
+    $info = $this->taskallama::getModelInfo($model['name']);
     expect($info)->toBeArray();
 });

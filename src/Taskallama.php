@@ -41,6 +41,14 @@ class Taskallama
         $this->modelService = $modelService;
     }
 
+    // Method to set raw property
+    public static function raw($raw): static
+    {
+        $instance = self::getInstance();
+        $instance->raw = $raw;
+
+        return $instance;
+    }
     public static function getInstance(): static
     {
         if (! self::$instance) {
