@@ -49,6 +49,7 @@ class Taskallama
 
         return $instance;
     }
+
     public static function getInstance(): static
     {
         if (! self::$instance) {
