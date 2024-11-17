@@ -1,12 +1,12 @@
 <?php
 
 namespace CodingWisely\Taskallama\Services;
+
 use CodingWisely\Taskallama\Traits\MakesHttpRequest;
 
 class TaskallamaService
 {
     use MakesHttpRequest;
-
 
     protected string $baseUrl;
 
@@ -29,7 +29,7 @@ class TaskallamaService
     {
         return $this->sendRequest('/api/copy', [
             'source' => $source,
-            'destination' => $destination
+            'destination' => $destination,
         ]);
     }
 
@@ -47,7 +47,7 @@ class TaskallamaService
     {
         return $this->sendRequest('/api/embeddings', [
             'model' => $modelName,
-            'prompt' => $prompt
+            'prompt' => $prompt,
         ]);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace CodingWisely\Taskallama\Tests;
 
+use CodingWisely\Taskallama\TaskallamaServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use CodingWisely\Taskallama\TaskallamaServiceProvider;
 
 class TestCase extends Orchestra
 {

@@ -4,7 +4,7 @@ use CodingWisely\Taskallama\Services\TaskallamaService;
 use CodingWisely\Taskallama\Taskallama;
 
 beforeEach(function () {
-    $this->taskallama = new Taskallama(new TaskallamaService());
+    $this->taskallama = new Taskallama(new TaskallamaService);
 });
 
 it('trigger proper instance of Taskallama', function () {

@@ -9,10 +9,10 @@ trait MakesHttpRequest
 {
     protected function sendRequest(string $urlSuffix, array $data, string $method = 'post')
     {
-        $url = config('taskallama.url') . $urlSuffix;
+        $url = config('taskallama.url').$urlSuffix;
 
-        if (!empty($data['stream']) && $data['stream'] === true) {
-            $client = new Client();
+        if (! empty($data['stream']) && $data['stream'] === true) {
+            $client = new Client;
             $response = $client->request($method, $url, [
                 'json' => $data,
                 'stream' => true,
@@ -22,6 +22,7 @@ trait MakesHttpRequest
             return $response;
         } else {
             $response = Http::timeout(config('taskallama.connection.timeout'))->$method($url, $data);
+
             return $response->json();
         }
     }

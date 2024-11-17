@@ -2,11 +2,8 @@
 
 namespace CodingWisely\Taskallama;
 
-use CodingWisely\Taskallama\Services\TaskallamaService;
-use Spatie\LaravelPackageTools\Exceptions\InvalidPackage;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use CodingWisely\Taskallama\Commands\TaskallamaCommand;
 
 class TaskallamaServiceProvider extends PackageServiceProvider
 {
@@ -21,5 +18,4 @@ class TaskallamaServiceProvider extends PackageServiceProvider
             ->name('taskallama')
             ->hasConfigFile();
     }
-
 }
