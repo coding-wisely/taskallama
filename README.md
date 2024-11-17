@@ -1,9 +1,8 @@
 # Taskallama: Laravel Integration with Ollama LLM API
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/codingwisely/taskallama.svg?style=flat-square)](https://packagist.org/packages/codingwisely/taskallama)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/codingwisely/taskallama/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/codingwisely/taskallama/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/codingwisely/taskallama/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/codingwisely/taskallama/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/codingwisely/taskallama.svg?style=flat-square)](https://packagist.org/packages/codingwisely/taskallama)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/codingwisely/taskallama.svg?style=for-the-badge&logo=packagist)](https://packagist.org/packages/codingwisely/taskallama)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/codingwisely/taskallama/fix-php-code-style-issues.yml?branch=main&label=Code%20Style&style=for-the-badge&logo=github)](https://github.com/coding-wisely/taskallama/actions/workflows/fix-php-code-style-issues.yml?branch=main)
+[![Total Downloads](https://img.shields.io/packagist/dt/codingwisely/taskallama.svg?style=for-the-badge&logo=packagist)](https://packagist.org/packages/codingwisely/taskallama)
 
 **Taskallama** is a Laravel package that provides seamless integration with Ollama's LLM API. 
 It simplifies generating AI-powered content, from professional task writing to conversational agents, with minimal effort. Whether you're building a task management system, an HR assistant for job posts, or blog content generation, Taskallama has you covered.
