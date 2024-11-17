@@ -5,7 +5,8 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/codingwisely/taskallama/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/codingwisely/taskallama/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/codingwisely/taskallama.svg?style=flat-square)](https://packagist.org/packages/codingwisely/taskallama)
 
-**Taskallama** is a Laravel package that provides seamless integration with Ollama's LLM API. It simplifies generating AI-powered content, from professional task writing to conversational agents, with minimal effort. Whether you're building a task management system, an HR assistant for job posts, or blog content generation, Taskallama has you covered.
+**Taskallama** is a Laravel package that provides seamless integration with Ollama's LLM API. 
+It simplifies generating AI-powered content, from professional task writing to conversational agents, with minimal effort. Whether you're building a task management system, an HR assistant for job posts, or blog content generation, Taskallama has you covered.
 
 ---
 
