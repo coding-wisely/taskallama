@@ -9,9 +9,4 @@ return [
     'connection' => [
         'timeout' => env('OLLAMA_CONNECTION_TIMEOUT', 300),
     ],
-    'error_messages' => [
-        'api_error' => 'API Error: ',
-        'communication_error' => 'Error communicating with Ollama: ',
-        'no_response' => 'No detailed response provided.',
-    ],
 ];

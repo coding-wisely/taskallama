@@ -1,19 +1,23 @@
-# Taskallama is a Laravel package that seamlessly integrates with Ollama’s LLM API to empower your applications with AI-driven text generation, task management assistance, and more. Designed for simplicity and scalability, Taskallama brings the power of language models to your Laravel projects.
+# Taskallama: Laravel Integration with Ollama LLM API
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/codingwisely/taskallama.svg?style=flat-square)](https://packagist.org/packages/codingwisely/taskallama)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/codingwisely/taskallama/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/codingwisely/taskallama/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/codingwisely/taskallama/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/codingwisely/taskallama/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/codingwisely/taskallama.svg?style=flat-square)](https://packagist.org/packages/codingwisely/taskallama)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+**Taskallama** is a Laravel package that provides seamless integration with Ollama's LLM API. It simplifies generating AI-powered content, from professional task writing to conversational agents, with minimal effort. Whether you're building a task management system, an HR assistant for job posts, or blog content generation, Taskallama has you covered.
 
-## Support us
+---
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/taskallama.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/taskallama)
+## Features
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+- Simple API for generating AI responses via the Ollama LLM.
+- Supports task creation, conversational AI, embeddings, and more.
+- Customizable agent personalities for tailored responses.
+- Integration with Laravel Livewire for real-time interactions.
+- Configurable options like streaming, model selection, and temperature.
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+---
 
 ## Installation
 
@@ -23,62 +27,154 @@ You can install the package via composer:
 composer require codingwisely/taskallama
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="taskallama-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
+Next, you should publish the package's configuration file:
 
 ```bash
 php artisan vendor:publish --tag="taskallama-config"
 ```
 
-This is the contents of the published config file:
+This will publish a `taskallama.php` file in your `config` directory where you can configure your Ollama API key and other settings.
 
 ```php
 return [
+    'model' => env('OLLAMA_MODEL', 'llama3.2'),
+    'default_format' => 'json',
+    'url' => env('OLLAMA_URL', 'http://127.0.0.1:11434'),
+    'default_prompt' => env('OLLAMA_DEFAULT_PROMPT', 'Hello Taskavelian, how can I assist you today?'),
+    'connection' => [
+        'timeout' => env('OLLAMA_CONNECTION_TIMEOUT', 300),
+    ],
 ];
 ```
 
-Optionally, you can publish the views using
+### Usage
 
-```bash
-php artisan vendor:publish --tag="taskallama-views"
-```
+#### Basic Example
 
-## Usage
+Generate a response using a prompt:
 
 ```php
-$taskallama = new CodingWisely\Taskallama();
-echo $taskallama->echoPhrase('Hello, CodingWisely!');
+use CodingWisely\Taskallama\Facades\Taskallama;
+
+$response = Taskallama::agent('You are a professional task creator...')
+    ->prompt('Write a task for implementing a new feature in a SaaS app.')
+    ->model('llama3.2')
+    ->options(['temperature' => 0.5])
+    ->stream(false)
+    ->ask();
+
+return $response['response'];
+```
+#### Chat Example
+
+Create a conversational agent:
+
+```php
+use CodingWisely\Taskallama\Facades\Taskallama;
+$messages = [
+    ['role' => 'user', 'content' => 'Tell me about Laravel'],
+    ['role' => 'assistant', 'content' => 'Laravel is a PHP framework for web development.'],
+    ['role' => 'user', 'content' => 'Why is it so popular?'],
+];
+
+$response = Taskallama::agent('You are a Laravel expert.')
+    ->model('llama3.2')
+    ->options(['temperature' => 0.7])
+    ->chat($messages);
 ```
 
-## Testing
+#### Livewire Integration Example
+
+Integrate Taskallama into a Livewire component for real-time task generation:
+
+```php
+namespace App\Livewire;
+
+use CodingWisely\Taskallama\Taskallama;
+use Livewire\Component;
+
+class AskTaskallama extends Component
+{
+    public $question = '';
+    public $response = '';
+
+    public function ask()
+    {
+        if (empty(trim($this->question))) {
+            $this->response = "Please provide a valid question.";
+            return;
+        }
+
+        try {
+            $this->response = Taskallama::agent('You are a task-writing assistant.')
+                ->prompt($this->question)
+                ->model('llama3.2')
+                ->options(['temperature' => 0])
+                ->stream(false)
+                ->ask()['response'] ?? "No response received.";
+        } catch (\Exception $e) {
+            $this->response = "Error: " . $e->getMessage();
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.ask-taskallama');
+    }
+}
+```
+#### Embeddings Example
+
+Generate embeddings for advanced search or semantic analysis:
+```php
+$embeddings = Taskallama::agent('Embedding Assistant')
+    ->model('llama3.2')
+    ->options(['temperature' => 0.5])
+    ->ask();
+
+print_r($embeddings);
+```
+### Additional Methods
+
+#### List Local Models
+```php
+$models = Taskallama::getInstance()->listLocalModels();
+print_r($models);
+```
+#### Retrieve Model Information
+```php
+$modelInfo = Taskallama::getInstance()->getModelInfo('llama3.2');
+print_r($modelInfo);
+```
+#### Retrieve Model Metadata
+```php
+$modelMetadata = Taskallama::getInstance()->getModelMetadata('llama3.2');
+print_r($modelMetadata);
+```
+#### Retrieve Model Samples
+```php
+$modelSamples = Taskallama::getInstance()->getModelSamples('llama3.2');
+print_r($modelSamples);
+```
+#### Retrieve Model Settings
+```php
+$modelSettings = Taskallama::getInstance()->getModelSettings('llama3.2');
+print_r($modelSettings);
+```
+
+#### Pull or Delete a Model
+```php
+$pullModel = Taskallama::getInstance()->pull('mistral');
+$deleteModel = Taskallama::getInstance()->delete('mistral');
+```
+
+### Testing
+Run the tests with:
 
 ```bash
 composer test
 ```
 
-## Changelog
+### License
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Vladimir Nikolic](https://github.com/coding-wisely)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+This package is open-source software licensed under the MIT License. Please see the [LICENSE.md](LICENSE.md) file for more information.

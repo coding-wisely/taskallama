@@ -1,292 +1,201 @@
 <?php
-
 namespace CodingWisely\Taskallama;
 
 use CodingWisely\Taskallama\Services\TaskallamaService;
 use CodingWisely\Taskallama\Traits\MakesHttpRequest;
+use CodingWisely\Taskallama\Traits\StreamHelper;
+use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\Psr7\Response;
 
 class Taskallama
 {
     use MakesHttpRequest;
+    use StreamHelper;
+
+    protected static ?self $instance = null;
 
     protected ?TaskallamaService $modelService;
 
-    /**
-     * selectedModel
-     */
     protected mixed $selectedModel = null;
-
-    /**
-     * model
-     */
     protected mixed $model = null;
-
-    /**
-     * prompt
-     */
     protected mixed $prompt = null;
-
-    protected mixed $format = null; // Initialize with a default value
-
-    /**
-     * options
-     */
+    protected mixed $format = null;
     protected mixed $options = [];
-
-    /**
-     * stream
-     */
     protected bool $stream = false;
-
-    /**
-     * raw
-     */
     protected mixed $raw = false;
-
-    /**
-     * agent
-     */
     protected mixed $agent = null;
-
-    /**
-     * Base64 encoded image.
-     */
     protected ?string $image = null;
+    protected string $keepAlive = "5m";
 
     /**
-     * keep alive
+     * Singleton pattern to manage the Taskallama instance.
      *
-     * @ var mixed
+     * @return static
      */
-    protected string $keepAlive = '5m';
-
-    /**
-     * Ollama class constructor.
-     */
-    public function __construct(TaskallamaService $modelService)
+    public static function getInstance(): static
     {
-        $this->modelService = $modelService;
-        $this->model = config('taskallama.model');
-        $this->format = config('taskallama.default_format', 'json'); // Set a default format
+        if (!self::$instance) {
+            self::$instance = app(self::class);
+        }
+        return self::$instance;
     }
 
     /**
      * Sets the agent for generation.
      *
-     * @return $this
+     * @param string $agent
+     * @return static
      */
-    public function agent(string $agent)
+    public static function agent(string $agent): static
     {
-        $this->agent = $agent;
-
-        return $this;
+        $instance = self::getInstance();
+        $instance->agent = $agent;
+        return $instance;
     }
 
     /**
      * Sets the prompt for generation.
      *
-     * @return $this
+     * @param string $prompt
+     * @return static
      */
-    public function prompt(string $prompt): static
+    public static function prompt(string $prompt): static
     {
-        $this->prompt = $prompt;
-
-        return $this;
+        $instance = self::getInstance();
+        $instance->prompt = $prompt;
+        return $instance;
     }
 
     /**
      * Sets the model for subsequent operations.
      *
-     * @return $this
+     * @param string $model
+     * @return static
      */
-    public function model(string $model): static
+    public static function model(string $model): static
     {
-        $this->selectedModel = $model;
-        $this->model = $model;
-
-        return $this;
+        $instance = self::getInstance();
+        $instance->selectedModel = $model;
+        $instance->model = $model;
+        return $instance;
     }
 
     /**
      * Sets the format for generation.
      *
-     * @return $this
+     * @param string $format
+     * @return static
      */
-    public function format(string $format): static
+    public static function format(string $format): static
     {
-        $this->format = $format;
-
-        return $this;
+        $instance = self::getInstance();
+        $instance->format = $format;
+        return $instance;
     }
 
     /**
      * Sets additional options for generation.
      *
-     * @return $this
+     * @param array $options
+     * @return static
      */
-    public function options(array $options = []): static
+    public static function options(array $options = []): static
     {
-        $this->options = $options;
-
-        return $this;
+        $instance = self::getInstance();
+        $instance->options = array_merge($instance->options, $options); // Merge with existing options
+        return $instance;
     }
 
     /**
      * Sets whether to use streaming in the response.
      *
-     * @return $this
+     * @param bool $stream
+     * @return static
      */
-    public function stream(bool $stream = false): static
+    public static function stream(bool $stream = false): static
     {
-        $this->stream = $stream;
-
-        return $this;
+        $instance = self::getInstance();
+        $instance->stream = $stream;
+        return $instance;
     }
 
     /**
      * Sets whether to return the response in raw format.
      *
-     * @return $this
+     * @param bool $raw
+     * @return static
      */
-    public function raw(bool $raw): static
+    public static function raw(bool $raw): static
     {
-        $this->raw = $raw;
-
-        return $this;
+        $instance = self::getInstance();
+        $instance->raw = $raw;
+        return $instance;
     }
 
     /**
      * Controls how long the model will stay loaded into memory following the request
      *
-     * @return $this
+     * @param string $keepAlive
+     * @return static
      */
-    public function keepAlive(string $keepAlive): static
+    public static function keepAlive(string $keepAlive): static
     {
-        $this->keepAlive = $keepAlive;
-
-        return $this;
-    }
-
-    /**
-     * Lists available local models.
-     */
-    public function models(): array
-    {
-        return $this->modelService->listLocalModels();
-    }
-
-    /**
-     * Shows information about the selected model.
-     */
-    public function show(): array
-    {
-        return $this->modelService->showModelInformation($this->selectedModel);
-    }
-
-    /**
-     * Copies a model.
-     *
-     * @return $this
-     *
-     * @throws \Exception
-     */
-    public function copy(string $destination): static
-    {
-        $this->modelService->copyModel($this->selectedModel, $destination);
-
-        return $this;
-    }
-
-    /**
-     * Deletes a model.
-     *
-     * @return $this
-     *
-     * @throws \Exception
-     */
-    public function delete(): static
-    {
-        $this->modelService->deleteModel($this->selectedModel);
-
-        return $this;
-    }
-
-    /**
-     * Pulls a model.
-     *
-     * @return $this
-     *
-     * @throws \Exception
-     */
-    public function pull(): static
-    {
-        $this->modelService->pullModel($this->selectedModel);
-
-        return $this;
-    }
-
-    /**
-     * Sets an image for generation.
-     *
-     * @return $this
-     *
-     * @throws \Exception
-     */
-    public function image(string $imagePath): static
-    {
-        if (! file_exists($imagePath)) {
-            throw new \Exception("Image file does not exist: $imagePath");
-        }
-
-        $this->image = base64_encode(file_get_contents($imagePath));
-
-        return $this;
-    }
-
-    /**
-     * Generates embeddings from the selected model.
-     *
-     * @throws \Exception
-     */
-    public function embeddings(string $prompt): array
-    {
-        return $this->modelService->generateEmbeddings($this->selectedModel, $prompt);
+        $instance = self::getInstance();
+        $instance->keepAlive = $keepAlive;
+        return $instance;
     }
 
     /**
      * Generates content using the specified model.
      */
-    public function ask(): array
+    public static function ask(): array|Response
     {
+        $instance = self::getInstance();
         $requestData = [
-            'model' => $this->model,
-            'system' => $this->agent,
-            'prompt' => $this->prompt,
-            'format' => $this->format,
-            'options' => $this->options,
-            'stream' => $this->stream,
-            'raw' => $this->raw,
-            'keep_alive' => $this->keepAlive,
+            'model' => $instance->model,
+            'system' => $instance->agent,
+            'prompt' => $instance->prompt,
+            'format' => $instance->format,
+            'options' => $instance->options,
+            'stream' => $instance->stream,
+            'raw' => $instance->raw,
+            'keep_alive' => $instance->keepAlive,
         ];
 
-        if ($this->image) {
-            $requestData['images'] = [$this->image];
+        if ($instance->image) {
+            $requestData['images'] = [$instance->image];
         }
 
-        return $this->sendRequest('/api/generate', $requestData);
+        return $instance->sendRequest('/api/generate', $requestData);
     }
 
     /**
      * Generates a chat completion using the specified model and conversation.
+     *
+     * @param array $conversation
+     * @return array
      */
-    public function chat(array $conversation): array
+    public static function chat(array $conversation): array
     {
-        return $this->sendRequest('/api/chat', [
-            'model' => $this->model,
+        $instance = self::getInstance();
+
+        return $instance->sendRequest('/api/chat', [
+            'model' => $instance->model,
             'messages' => $conversation,
-            'format' => $this->format,
-            'options' => $this->options,
-            'stream' => $this->stream,
+            'format' => $instance->format,
+            'options' => $instance->options ?: (object)[], // Ensure `options` is an object or empty map
+            'stream' => $instance->stream,
         ]);
+    }
+
+    /**
+     * @param StreamInterface $body
+     * @param \Closure $handleJsonObject
+     * @return array
+     * @throws \Exception
+     */
+    public static function processStream(StreamInterface $body, \Closure $handleJsonObject): array
+    {
+        return self::doProcessStream($body, $handleJsonObject);
     }
 }

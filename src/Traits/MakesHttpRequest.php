@@ -7,6 +7,14 @@ use Illuminate\Support\Facades\Http;
 
 trait MakesHttpRequest
 {
+    /**
+     * sendRequest
+     *
+     * @param  string $urlSuffix
+     * @param  array $data
+     * @param  string $method
+     * @return mixed
+     */
     protected function sendRequest(string $urlSuffix, array $data, string $method = 'post')
     {
         $url = config('taskallama.url').$urlSuffix;
