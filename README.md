@@ -146,16 +146,7 @@ print_r($models);
 $modelInfo = Taskallama::getInstance()->getModelInfo('llama3.2');
 print_r($modelInfo);
 ```
-#### Retrieve Model Metadata
-```php
-$modelMetadata = Taskallama::getInstance()->getModelMetadata('llama3.2');
-print_r($modelMetadata);
-```
-#### Retrieve Model Samples
-```php
-$modelSamples = Taskallama::getInstance()->getModelSamples('llama3.2');
-print_r($modelSamples);
-```
+
 #### Retrieve Model Settings
 ```php
 $modelSettings = Taskallama::getInstance()->getModelSettings('llama3.2');
@@ -163,6 +154,9 @@ print_r($modelSettings);
 ```
 
 #### Pull or Delete a Model
+
+If you're pulling model, make sure you set this a background job, as it may take a while to download the model.
+
 ```php
 $pullModel = Taskallama::getInstance()->pull('mistral');
 $deleteModel = Taskallama::getInstance()->delete('mistral');

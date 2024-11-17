@@ -27,11 +27,11 @@ class Taskallama
     protected ?string $image = null;
     protected string $keepAlive = "5m";
 
-    /**
-     * Singleton pattern to manage the Taskallama instance.
-     *
-     * @return static
-     */
+    public function __construct(TaskallamaService $modelService)
+    {
+        $this->modelService = $modelService;
+    }
+
     public static function getInstance(): static
     {
         if (!self::$instance) {
@@ -40,12 +40,6 @@ class Taskallama
         return self::$instance;
     }
 
-    /**
-     * Sets the agent for generation.
-     *
-     * @param string $agent
-     * @return static
-     */
     public static function agent(string $agent): static
     {
         $instance = self::getInstance();
@@ -53,12 +47,6 @@ class Taskallama
         return $instance;
     }
 
-    /**
-     * Sets the prompt for generation.
-     *
-     * @param string $prompt
-     * @return static
-     */
     public static function prompt(string $prompt): static
     {
         $instance = self::getInstance();
@@ -66,12 +54,6 @@ class Taskallama
         return $instance;
     }
 
-    /**
-     * Sets the model for subsequent operations.
-     *
-     * @param string $model
-     * @return static
-     */
     public static function model(string $model): static
     {
         $instance = self::getInstance();
@@ -80,12 +62,6 @@ class Taskallama
         return $instance;
     }
 
-    /**
-     * Sets the format for generation.
-     *
-     * @param string $format
-     * @return static
-     */
     public static function format(string $format): static
     {
         $instance = self::getInstance();
@@ -93,25 +69,13 @@ class Taskallama
         return $instance;
     }
 
-    /**
-     * Sets additional options for generation.
-     *
-     * @param array $options
-     * @return static
-     */
     public static function options(array $options = []): static
     {
         $instance = self::getInstance();
-        $instance->options = array_merge($instance->options, $options); // Merge with existing options
+        $instance->options = array_merge($instance->options, $options);
         return $instance;
     }
 
-    /**
-     * Sets whether to use streaming in the response.
-     *
-     * @param bool $stream
-     * @return static
-     */
     public static function stream(bool $stream = false): static
     {
         $instance = self::getInstance();
@@ -119,35 +83,6 @@ class Taskallama
         return $instance;
     }
 
-    /**
-     * Sets whether to return the response in raw format.
-     *
-     * @param bool $raw
-     * @return static
-     */
-    public static function raw(bool $raw): static
-    {
-        $instance = self::getInstance();
-        $instance->raw = $raw;
-        return $instance;
-    }
-
-    /**
-     * Controls how long the model will stay loaded into memory following the request
-     *
-     * @param string $keepAlive
-     * @return static
-     */
-    public static function keepAlive(string $keepAlive): static
-    {
-        $instance = self::getInstance();
-        $instance->keepAlive = $keepAlive;
-        return $instance;
-    }
-
-    /**
-     * Generates content using the specified model.
-     */
     public static function ask(): array|Response
     {
         $instance = self::getInstance();
@@ -169,12 +104,6 @@ class Taskallama
         return $instance->sendRequest('/api/generate', $requestData);
     }
 
-    /**
-     * Generates a chat completion using the specified model and conversation.
-     *
-     * @param array $conversation
-     * @return array
-     */
     public static function chat(array $conversation): array
     {
         $instance = self::getInstance();
@@ -183,19 +112,48 @@ class Taskallama
             'model' => $instance->model,
             'messages' => $conversation,
             'format' => $instance->format,
-            'options' => $instance->options ?: (object)[], // Ensure `options` is an object or empty map
+            'options' => $instance->options ?: (object)[],
             'stream' => $instance->stream,
         ]);
     }
 
-    /**
-     * @param StreamInterface $body
-     * @param \Closure $handleJsonObject
-     * @return array
-     * @throws \Exception
-     */
-    public static function processStream(StreamInterface $body, \Closure $handleJsonObject): array
+    public static function embeddings(string $prompt): array
     {
-        return self::doProcessStream($body, $handleJsonObject);
+        $instance = self::getInstance();
+
+        return $instance->sendRequest('/api/embeddings', [
+            'model' => $instance->model,
+            'prompt' => $prompt,
+        ]);
+    }
+
+    public static function listLocalModels(): array
+    {
+        $instance = self::getInstance();
+
+        return $instance->modelService->listLocalModels();
+    }
+
+    public static function getModelInfo(string $model): array
+    {
+        $instance = self::getInstance();
+
+        return $instance->modelService->showModelInformation($model);
+    }
+
+
+
+    public static function pull(string $model): array
+    {
+        $instance = self::getInstance();
+
+        return $instance->modelService->pullModel($model);
+    }
+
+    public static function delete(string $model): array
+    {
+        $instance = self::getInstance();
+
+        return $instance->modelService->deleteModel($model);
     }
 }
