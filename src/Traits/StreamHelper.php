@@ -13,7 +13,7 @@ trait StreamHelper
 
         $jsonObjects = [];
 
-        while (!$body->eof()) {
+        while (! $body->eof()) {
             $chunk = $body->read(256);
             $buffer .= $chunk;
 
@@ -33,21 +33,21 @@ trait StreamHelper
                 } else {
                     // If JSON decoding fails, it means this is an incomplete object,
                     // So, we append this part back to the buffer to be processed with the next chunk
-                    $buffer = $json . "\n" . $buffer;
+                    $buffer = $json."\n".$buffer;
                     break;
                 }
             }
         }
 
         // Process any remaining data in the buffer
-        if (!empty($buffer)) {
+        if (! empty($buffer)) {
             $data = json_decode($buffer, true);
             if ($data !== null) {
                 $handleJsonObject($data);
                 $jsonObjects[] = $data;
             } else {
                 // we shouldn't hit this, except when ollama is unexpectedly killed
-                throw new \Exception("Incomplete JSON object remaining: " . $buffer);
+                throw new \Exception('Incomplete JSON object remaining: '.$buffer);
             }
         }
 

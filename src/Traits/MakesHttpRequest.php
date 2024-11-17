@@ -10,9 +10,6 @@ trait MakesHttpRequest
     /**
      * sendRequest
      *
-     * @param  string $urlSuffix
-     * @param  array $data
-     * @param  string $method
      * @return mixed
      */
     protected function sendRequest(string $urlSuffix, array $data, string $method = 'post')

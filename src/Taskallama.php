@@ -1,10 +1,10 @@
 <?php
+
 namespace CodingWisely\Taskallama;
 
 use CodingWisely\Taskallama\Services\TaskallamaService;
 use CodingWisely\Taskallama\Traits\MakesHttpRequest;
 use CodingWisely\Taskallama\Traits\StreamHelper;
-use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Psr7\Response;
 
 class Taskallama
@@ -17,15 +17,24 @@ class Taskallama
     protected ?TaskallamaService $modelService;
 
     protected mixed $selectedModel = null;
+
     protected mixed $model = null;
+
     protected mixed $prompt = null;
+
     protected mixed $format = null;
+
     protected mixed $options = [];
+
     protected bool $stream = false;
+
     protected mixed $raw = false;
+
     protected mixed $agent = null;
+
     protected ?string $image = null;
-    protected string $keepAlive = "5m";
+
+    protected string $keepAlive = '5m';
 
     public function __construct(TaskallamaService $modelService)
     {
@@ -34,9 +43,10 @@ class Taskallama
 
     public static function getInstance(): static
     {
-        if (!self::$instance) {
+        if (! self::$instance) {
             self::$instance = app(self::class);
         }
+
         return self::$instance;
     }
 
@@ -44,6 +54,7 @@ class Taskallama
     {
         $instance = self::getInstance();
         $instance->agent = $agent;
+
         return $instance;
     }
 
@@ -51,6 +62,7 @@ class Taskallama
     {
         $instance = self::getInstance();
         $instance->prompt = $prompt;
+
         return $instance;
     }
 
@@ -59,6 +71,7 @@ class Taskallama
         $instance = self::getInstance();
         $instance->selectedModel = $model;
         $instance->model = $model;
+
         return $instance;
     }
 
@@ -66,6 +79,7 @@ class Taskallama
     {
         $instance = self::getInstance();
         $instance->format = $format;
+
         return $instance;
     }
 
@@ -73,6 +87,7 @@ class Taskallama
     {
         $instance = self::getInstance();
         $instance->options = array_merge($instance->options, $options);
+
         return $instance;
     }
 
@@ -80,6 +95,7 @@ class Taskallama
     {
         $instance = self::getInstance();
         $instance->stream = $stream;
+
         return $instance;
     }
 
@@ -112,7 +128,7 @@ class Taskallama
             'model' => $instance->model,
             'messages' => $conversation,
             'format' => $instance->format,
-            'options' => $instance->options ?: (object)[],
+            'options' => $instance->options ?: (object) [],
             'stream' => $instance->stream,
         ]);
     }
@@ -140,8 +156,6 @@ class Taskallama
 
         return $instance->modelService->showModelInformation($model);
     }
-
-
 
     public static function pull(string $model): array
     {
