@@ -7,6 +7,8 @@
 **Taskallama** is a Laravel package that provides seamless integration with Ollama's LLM API. 
 It simplifies generating AI-powered content, from professional task writing to conversational agents, with minimal effort. Whether you're building a task management system, an HR assistant for job posts, or blog content generation, Taskallama has you covered.
 
+**Why i built it?** Simple reasons - i want to implement a ai helper on or Project and task management system at [Taskavel.com](https://taskavel.com) to help me quickly scaffold the task. We gonna use it also on our another SaaS project, Advanced ATS system at [Bagel.blue](https://bagel.blue) to make it easy to create a Job Postings. 
+
 ---
 
 ## Features
