@@ -6,6 +6,7 @@ use CodingWisely\Taskallama\Services\TaskallamaService;
 use CodingWisely\Taskallama\Traits\MakesHttpRequest;
 use CodingWisely\Taskallama\Traits\StreamHelper;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\StreamInterface;
 
 class Taskallama
 {
@@ -126,20 +127,40 @@ class Taskallama
             $requestData['images'] = [$instance->image];
         }
 
-        return $instance->sendRequest('/api/generate', $requestData);
+        $response = $instance->sendRequest('/api/generate', $requestData);
+
+        // Handle streaming
+        if ($instance->stream && $response instanceof StreamInterface) {
+            return self::doProcessStream($response, function ($jsonObject) {
+                // Handle each streamed JSON object
+                logger()->info('Streamed JSON:', $jsonObject);
+            });
+        }
+
+        return $response;
     }
 
     public static function chat(array $conversation): array
     {
         $instance = self::getInstance();
 
-        return $instance->sendRequest('/api/chat', [
+        $response = $instance->sendRequest('/api/chat', [
             'model' => $instance->model,
             'messages' => $conversation,
             'format' => $instance->format,
             'options' => $instance->options ?: (object) [],
             'stream' => $instance->stream,
         ]);
+
+        // Handle streaming
+        if ($instance->stream && $response instanceof StreamInterface) {
+            return self::doProcessStream($response, function ($jsonObject) {
+                // Handle streamed JSON objects
+                logger()->info('Streamed JSON:', $jsonObject);
+            });
+        }
+
+        return $response;
     }
 
     public static function embeddings(string $prompt): array
