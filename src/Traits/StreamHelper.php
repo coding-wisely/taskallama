@@ -39,7 +39,7 @@ trait StreamHelper
                 } else {
                     // If JSON decoding fails, it means this is an incomplete object,
                     // So, we append this part back to the buffer to be processed with the next chunk
-                    $buffer = $json . "\n" . $buffer;
+                    $buffer = $json."\n".$buffer;
                     break;
                 }
             }
@@ -59,7 +59,7 @@ trait StreamHelper
                 flush();
             } else {
                 // we shouldn't hit this, except when ollama is unexpectedly killed
-                throw new \Exception('Incomplete JSON object remaining: ' . $buffer);
+                throw new \Exception('Incomplete JSON object remaining: '.$buffer);
             }
         }
 

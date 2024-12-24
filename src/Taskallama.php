@@ -6,8 +6,8 @@ use CodingWisely\Taskallama\Services\TaskallamaService;
 use CodingWisely\Taskallama\Traits\MakesHttpRequest;
 use CodingWisely\Taskallama\Traits\StreamHelper;
 use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Taskallama
 {
@@ -140,7 +140,7 @@ class Taskallama
                 } catch (\Exception $e) {
                     logger()->error('Error processing stream chunk:', [
                         'error' => $e->getMessage(),
-                        'chunk' => $chunk
+                        'chunk' => $chunk,
                     ]);
                 }
             });
