@@ -32,6 +32,10 @@ trait StreamHelper
                 if ($data !== null) {
                     $handleJsonObject($data);
                     $jsonObjects[] = $data;
+
+                    // Ensure real-time output for streams
+                    ob_flush();
+                    flush();
                 } else {
                     // If JSON decoding fails, it means this is an incomplete object,
                     // So, we append this part back to the buffer to be processed with the next chunk
@@ -49,6 +53,10 @@ trait StreamHelper
             if ($data !== null) {
                 $handleJsonObject($data);
                 $jsonObjects[] = $data;
+
+                // Ensure final real-time output
+                ob_flush();
+                flush();
             } else {
                 // we shouldn't hit this, except when ollama is unexpectedly killed
                 throw new \Exception('Incomplete JSON object remaining: ' . $buffer);
