@@ -2,7 +2,6 @@
 
 use CodingWisely\Taskallama\Services\TaskallamaService;
 use CodingWisely\Taskallama\Taskallama;
-use GuzzleHttp\Psr7\Response;
 
 beforeEach(function () {
     $this->taskallama = new Taskallama(new TaskallamaService);
