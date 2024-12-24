@@ -4,20 +4,20 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/codingwisely/taskallama/fix-php-code-style-issues.yml?branch=main&label=Code%20Style&style=for-the-badge&logo=github)](https://github.com/coding-wisely/taskallama/actions/workflows/fix-php-code-style-issues.yml?branch=main)
 [![Total Downloads](https://img.shields.io/packagist/dt/codingwisely/taskallama.svg?style=for-the-badge&logo=packagist)](https://packagist.org/packages/codingwisely/taskallama)
 
-**Taskallama** is a Laravel package that provides seamless integration with Ollama's LLM API. 
+**Taskallama** is a Laravel package that provides seamless integration with Ollama's LLM API.
 It simplifies generating AI-powered content, from professional task writing to conversational agents, with minimal effort. Whether you're building a task management system, an HR assistant for job posts, or blog content generation, Taskallama has you covered.
 
-**Why i built it?** Simple reasons - i want to implement a ai helper on or Project and task management system at [Taskavel.com](https://taskavel.com) to help me quickly scaffold the task. We gonna use it also on our another SaaS project, Advanced ATS system at [Bagel.blue](https://bagel.blue) to make it easy to create a Job Postings. 
+**Why i built it?** Simple reasons - i want to implement a ai helper on or Project and task management system at [Taskavel.com](https://taskavel.com) to help me quickly scaffold the task. We gonna use it also on our another SaaS project, Advanced ATS system at [Bagel.blue](https://bagel.blue) to make it easy to create a Job Postings.
 
 ---
 
 ## Features
 
-- Simple API for generating AI responses via the Ollama LLM.
-- Supports task creation, conversational AI, embeddings, and more.
-- Customizable agent personalities for tailored responses.
-- Integration with Laravel Livewire for real-time interactions.
-- Configurable options like streaming, model selection, and temperature.
+-   Simple API for generating AI responses via the Ollama LLM.
+-   Supports task creation, conversational AI, embeddings, and more.
+-   Customizable agent personalities for tailored responses.
+-   Integration with Laravel Livewire for real-time interactions.
+-   Configurable options like streaming, model selection, and temperature.
 
 ---
 
@@ -26,10 +26,12 @@ It simplifies generating AI-powered content, from professional task writing to c
 ## Prerequisites
 
 1. **Ollama Installation**
+
     - Taskallama requires [Ollama](https://ollama.com/) to be installed and running locally on your machine. You can download and install Ollama from their official website:
         - [Ollama Installation Guide](https://ollama.com/)
 
 2. **Ollama Configuration**
+
     - By default, Taskallama connects to Ollama at `http://127.0.0.1:11434`. Ensure that Ollama is running and accessible at this address. You can update the `OLLAMA_URL` in the config file if it's hosted elsewhere.
 
 3. **System Requirements**
@@ -68,7 +70,7 @@ return [
 
 ### Usage
 
-#### Basic Example
+#### Basic Example (non-stream)
 
 Generate a response using a prompt:
 
@@ -84,6 +86,28 @@ $response = Taskallama::agent('You are a professional task creator...')
 
 return $response['response'];
 ```
+
+#### Basic Example (stream)
+
+Generate a stream response using a prompt:
+
+```php
+use CodingWisely\Taskallama\Facades\Taskallama;
+
+return response()->stream(function () use () {
+    Taskallama::agent('You are a professional task creator...')
+        ->prompt('Write a task for implementing a new feature in a SaaS app.')
+        ->model('llama3.2')
+        ->options(['temperature' => 0.5])
+        ->stream(true)
+        ->ask();
+ }, 200, [
+    'Cache-Control' => 'no-cache',
+    'X-Accel-Buffering' => 'no',
+    'Content-Type' => 'text/event-stream',
+]);
+```
+
 #### Chat Example
 
 Create a conversational agent:
@@ -142,9 +166,11 @@ class AskTaskallama extends Component
     }
 }
 ```
+
 #### Embeddings Example
 
 Generate embeddings for advanced search or semantic analysis:
+
 ```php
 $embeddings = Taskallama::agent('Embedding Assistant')
     ->model('llama3.2')
@@ -153,20 +179,25 @@ $embeddings = Taskallama::agent('Embedding Assistant')
 
 print_r($embeddings);
 ```
+
 ### Additional Methods
 
 #### List Local Models
+
 ```php
 $models = Taskallama::getInstance()->listLocalModels();
 print_r($models);
 ```
+
 #### Retrieve Model Information
+
 ```php
 $modelInfo = Taskallama::getInstance()->getModelInfo('llama3.2');
 print_r($modelInfo);
 ```
 
 #### Retrieve Model Settings
+
 ```php
 $modelSettings = Taskallama::getInstance()->getModelSettings('llama3.2');
 print_r($modelSettings);
@@ -182,6 +213,7 @@ $deleteModel = Taskallama::getInstance()->delete('mistral');
 ```
 
 ### Testing
+
 Run the tests with:
 
 ```bash
