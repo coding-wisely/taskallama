@@ -31,9 +31,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install PHPStan
-        run: composer require --dev phpstan/phpstan
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -53,11 +50,6 @@ jobs:
 
       - name: List Installed Dependencies
         run: composer show -D
-        
-      - name: Start API Server
-        run: |
-          php -S 127.0.0.1:11434 -t public &
-          sleep 5 # Allow server to start
-        
+
       - name: Execute tests
         run: vendor/bin/pest --ci
