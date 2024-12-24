@@ -30,8 +30,8 @@ it('correctly processes ask method with real API call without stream', function 
         ->stream(false)
         ->ask();
 
-        expect($response)->toBeInstanceOf(Response::class);
-    });
+    expect($response)->toBeInstanceOf(Response::class);
+});
 it('correctly processes ask method with real API call with stream', function () {
     $response = $this->taskallama->agent('You are a weather expert...')
         ->prompt('Why is the sky blue? answer only in 4 words')

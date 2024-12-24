@@ -7,7 +7,6 @@ use CodingWisely\Taskallama\Traits\MakesHttpRequest;
 use CodingWisely\Taskallama\Traits\StreamHelper;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 class Taskallama
 {
