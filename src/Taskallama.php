@@ -114,14 +114,20 @@ class Taskallama
         $instance = self::getInstance();
         $requestData = [
             'model' => $instance->model,
-            'system' => $instance->agent,
             'prompt' => $instance->prompt,
-            'format' => $instance->format,
             'options' => $instance->options,
             'stream' => $instance->stream,
             'raw' => $instance->raw,
             'keep_alive' => $instance->keepAlive,
         ];
+
+        //for testing 'raw mode'
+        if ($instance->raw) {
+            unset($requestData['system'], $requestData['format']);
+        } else {
+            $requestData['system'] = $instance->agent;
+            $requestData['format'] = $instance->format;
+        }
 
         if ($instance->image) {
             $requestData['images'] = [$instance->image];

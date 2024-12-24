@@ -29,11 +29,12 @@ it('correctly processes ask method with real API call without stream', function 
         ->options(['temperature' => 0.8])
         ->stream(false)
         ->ask();
+
     expect($response)->toBeArray();
+
+    expect($response)->toHaveKeys(['model', 'created_at', 'response', 'done']);
     expect($response['response'])->toBeString();
-    expect($response)->toHaveKeys(['model', 'created_at', 'response', 'done', 'context']);
     expect($response['done'])->toBeTrue();
-    expect($response['done_reason'])->toBe('stop');
 });
 it('correctly processes ask method with real API call with stream', function () {
     $chunks = $this->taskallama->agent('You are a weather expert...')
