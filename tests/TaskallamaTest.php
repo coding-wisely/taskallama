@@ -2,6 +2,7 @@
 
 use CodingWisely\Taskallama\Services\TaskallamaService;
 use CodingWisely\Taskallama\Taskallama;
+use GuzzleHttp\Psr7\Response;
 
 beforeEach(function () {
     $this->taskallama = new Taskallama(new TaskallamaService);
@@ -21,12 +22,22 @@ it('sets properties correctly and returns instance', function ($method, $value) 
     'stream' => ['stream', false],
     'raw' => ['raw', true],
 ]);
-it('correctly processes ask method with real API call', function () {
+it('correctly processes ask method with real API call without stream', function () {
     $response = $this->taskallama->agent('You are a weather expert...')
         ->prompt('Why is the sky blue? answer only in 4 words')
         ->model('llama3.2')
         ->options(['temperature' => 0.8])
         ->stream(false)
+        ->ask();
+
+        expect($response)->toBeInstanceOf(Response::class);
+    });
+it('correctly processes ask method with real API call with stream', function () {
+    $response = $this->taskallama->agent('You are a weather expert...')
+        ->prompt('Why is the sky blue? answer only in 4 words')
+        ->model('llama3.2')
+        ->options(['temperature' => 0.8])
+        ->stream(true)
         ->ask();
 
     expect($response)->toBeArray();
