@@ -162,10 +162,19 @@ class Taskallama
         ]);
 
         // Handle streaming
-        if ($instance->stream && $response instanceof StreamInterface) {
-            return self::doProcessStream($response, function ($jsonObject) {
-                // Handle streamed JSON objects
-                logger()->info('Streamed JSON:', $jsonObject);
+        if ($instance->stream && $response instanceof ResponseInterface) {
+            return self::doProcessStream($response, function ($chunk) {
+                try {
+                    logger()->info('taskallama stream chunk:', [$chunk]);
+                    echo $chunk;
+                    ob_flush();
+                    flush();
+                } catch (\Exception $e) {
+                    logger()->error('Error processing stream chunk:', [
+                        'error' => $e->getMessage(),
+                        'chunk' => $chunk,
+                    ]);
+                }
             });
         }
 
