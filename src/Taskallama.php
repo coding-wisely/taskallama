@@ -7,6 +7,7 @@ use CodingWisely\Taskallama\Traits\MakesHttpRequest;
 use CodingWisely\Taskallama\Traits\StreamHelper;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Taskallama
 {
@@ -129,11 +130,19 @@ class Taskallama
 
         $response = $instance->sendRequest('/api/generate', $requestData);
 
-        // Handle streaming
-        if ($instance->stream && $response instanceof StreamInterface) {
-            return self::doProcessStream($response, function ($jsonObject) {
-                // Handle each streamed JSON object
-                logger()->info('Streamed JSON:', $jsonObject);
+        if ($instance->stream && $response instanceof ResponseInterface) {
+            return self::doProcessStream($response, function ($chunk) {
+                try {
+                    logger()->info('taskallama stream chunk:', [$chunk]);
+                    echo $chunk;
+                    ob_flush();
+                    flush();
+                } catch (\Exception $e) {
+                    logger()->error('Error processing stream chunk:', [
+                        'error' => $e->getMessage(),
+                        'chunk' => $chunk
+                    ]);
+                }
             });
         }
 
