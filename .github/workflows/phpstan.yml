@@ -15,9 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install PHPStan
-        run: composer require --dev phpstan/phpstan
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
