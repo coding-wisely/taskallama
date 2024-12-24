@@ -29,18 +29,22 @@ it('correctly processes ask method with real API call without stream', function 
         ->options(['temperature' => 0.8])
         ->stream(false)
         ->ask();
-
-        expect($response)->toBeInstanceOf(Response::class);
-    });
+    expect($response)->toBeArray();
+    expect($response['response'])->toBeString();
+    expect($response)->toHaveKeys(['model', 'created_at', 'response', 'done', 'context']);
+    expect($response['done'])->toBeTrue();
+    expect($response['done_reason'])->toBe('stop');
+});
 it('correctly processes ask method with real API call with stream', function () {
-    $response = $this->taskallama->agent('You are a weather expert...')
+    $chunks = $this->taskallama->agent('You are a weather expert...')
         ->prompt('Why is the sky blue? answer only in 4 words')
         ->model('llama3.2')
         ->options(['temperature' => 0.8])
         ->stream(true)
         ->ask();
 
-    expect($response)->toBeArray();
+    expect($chunks)->toBeArray();
+    expect($chunks[0])->toBeString();
 });
 it('lists available local models', function () {
     $models = $this->taskallama::listLocalModels();
